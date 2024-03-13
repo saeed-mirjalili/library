@@ -105,4 +105,5 @@ class bookController extends mainController
         $delete = $book->delete();
         return $this->Response('delete', 'success', $delete, 200);
     }
+
 }

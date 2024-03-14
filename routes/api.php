@@ -3,6 +3,7 @@
 use App\Http\Controllers\authorController;
 use App\Http\Controllers\bookController;
 use App\Http\Controllers\categoryController;
+use App\Http\Controllers\panelController;
 use App\Http\Controllers\userController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -39,7 +40,9 @@ Route::post('login' ,[userController::class , 'login'])->name('login');
         Route::apiResource('authors' ,authorController::class);
         Route::apiResource('books' ,bookController::class);
 
-        Route::get('usersBook/{book}' ,[bookController::class , 'usersBook']);
-        Route::get('usersBooks' ,[bookController::class , 'usersBooks']);
+        Route::get('panel/{book}' ,[panelController::class , 'addBook']);
+        Route::get('panel' ,[panelController::class , 'showBook']);
+        Route::post('panel/add' ,[panelController::class , 'addBooks']);
+        Route::post('panel/remove' ,[panelController::class , 'removeBooks']);
 
 });

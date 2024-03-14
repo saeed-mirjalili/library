@@ -105,4 +105,29 @@ class bookController extends mainController
         $delete = $book->delete();
         return $this->Response('delete', 'success', $delete, 200);
     }
+
+    public function usersBook(Book $book) {
+        $user = auth()->user();
+        $book->users()->attach($user);
+        return $this->Response('add book', 'success', new bookResource($book), 200);
+    }
+
+    public function usersBooks(Request $request) {
+
+        $validator = Validator::make($request->all(),[
+            'books' => 'numeric'
+        ]);
+        if ($validator->fails()) {
+            return $this->Response('Error', $validator->messages(), null, 500);
+        }
+        $user = auth()->user();
+        dd($request->books);
+        foreach ($request->books_id as $book) {
+            $books = Book::findOrFail($book);
+            $books->users()->attach($user);
+        }
+        return $this->Response('add books', 'success', null, 200);
+
+    }
+
 }

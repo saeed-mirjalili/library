@@ -4,13 +4,13 @@ namespace App\Traits;
 
 trait ResponseOutput{
 
-    protected function Response($status, $message, $data, $code) 
+    protected function Response($status=null, $message=null, $data=null, $code=200) 
     {
-        return response()->json([
-            'status' => $status,
-            'message' => $message,
-            'data' => $data
-        ], $code);
+        $body = [];
+        !is_null($status) && $body['status'] = $status;
+        !is_null($message) && $body['message'] = $message;
+        !is_null($data) && $body['data'] = $data;
+        return response()->json($body, $code);
     }
 }
 

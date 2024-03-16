@@ -29,15 +29,13 @@ class categoryController extends mainController
     {
         $validator = Validator::make($request->all(),[
             'name' => 'required|string',
-            'description' => 'string'
+            'description' => 'required|string'
         ]);
         if ($validator->fails()) {
             return $this->Response('Error',$validator->messages(),null,500);
         }
-        $category = Category::create([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);
+        $category = Category::create($validator->validated());
+
         return $this->Response('create' , 'success' , new categoryResource($category), 200);
     }
 
@@ -46,8 +44,7 @@ class categoryController extends mainController
      */
     public function show(Category $category)
     {
-        return $this->Response('show', 'success', new categoryResource($category->load('authors')
-                                                                                ->load('books')), 200);
+        return $this->Response('show', 'success', new categoryResource($category->load('authors')->load('books')), 200);
     }
 
     /**
@@ -62,10 +59,8 @@ class categoryController extends mainController
         if ($validator->fails()) {
             return $this->Response('Error',$validator->messages(),null,500);
         }
-        $category->update([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);
+        $category->update($validator->validated());
+
         return $this->Response('update' , 'success' , new categoryResource($category), 200);
     }
 

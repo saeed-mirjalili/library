@@ -40,17 +40,15 @@ class bookController extends mainController
             return $this->Response('Error', $validator->messages(), null, 500);
         }
 
+        // create name $ save image
         $bookName = md5(uniqid(rand(),true)).'.'. $request->book_url->extension();
         $request->book_url->storeAs('/books',$bookName,'public');
+        // fix book path
+        $input = $validator->validated();
+        $input['book_url'] = $bookName;
+        // create book
+        $book = Book::create($input);
 
-        $book = Book::create([
-            'name' => $request->name,
-            'summary' => $request->summary,
-            'edition' => $request->edition,
-            'author_id' => $request->author_id,
-            'category_id' => $request->category_id,
-            'book_url' => $bookName
-        ]);
         return $this->Response('create', 'success', new bookResource($book), 200);
     }
 
@@ -59,8 +57,7 @@ class bookController extends mainController
      */
     public function show(Book $book)
     {
-        return $this->Response('show', 'success', new bookResource($book->load('author')
-                                                                        ->load('category')), 200);
+        return $this->Response('show', 'success', new bookResource($book->load('author')->load('category')), 200);
     }
 
     /**
@@ -80,21 +77,17 @@ class bookController extends mainController
             return $this->Response('Error', $validator->messages(), null, 500);
         }
 
+        $input = $validator->validated();
+
         if ($request->has('book_url')) {
             $bookName = md5(uniqid(rand(),true)).'.'. $request->book_url->extension();
             $request->book_url->storeAs('/books',$bookName,'public');
+            $input['book_url'] = $bookName;
         }
 
-        $book->update([
-            'name' => $request->name,
-            'summary' => $request->summary,
-            'edition' => $request->edition,
-            'author_id' => $request->author_id,
-            'category_id' => $request->category_id,
-            'book_url' => $request->has('book_url') ? $bookName : $book->book_url
-        ]);
-        return $this->Response('create', 'success', new bookResource($book->load('author')
-                                                                          ->load('category')), 200);
+        $book->update($input);
+
+        return $this->Response('create', 'success', new bookResource($book->load('author')->load('category')), 200);
     }
 
     /**

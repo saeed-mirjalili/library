@@ -34,9 +34,10 @@ class authorController extends mainController
         if ($validator->fails()) {
             return $this->Response('Error',$validator->messages(),null,500);
         }
-        $author = Author::create([
-            'name' => $request->name,
-        ]);
+
+        $validated = $request->except('categories');
+        $author = Author::create($validated);
+
         if ($request->has('categories')) {
             foreach($request->categories as $category){
                 $author->categories()->attach($category);
@@ -69,9 +70,7 @@ class authorController extends mainController
         }
 
         if ($request->has('name')) {
-            $author->update([
-                'name' => $request->name,
-            ]);
+            $author->update($request->except('categories'));
         }
 
         if ($request->has('categories')) {

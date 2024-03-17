@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\categoryResource;
 use App\Models\Category;
+use App\saeed\Facades\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class categoryController extends mainController
+class categoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,13 +16,13 @@ class categoryController extends mainController
     public function index()
     {
         $category = Category::paginate(4);
-        return $this->Response('list', 'success' ,[
+        return ApiResponse::withMessage('list')->withData([
             'data' => categoryResource::collection($category),
             'links' => categoryResource::collection($category)->response()->getData()->links,
             'meta' => categoryResource::collection($category)->response()->getData()->meta,
-        ] ,200);
+            ])->build()->apiResponse();
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -32,11 +33,11 @@ class categoryController extends mainController
             'description' => 'required|string'
         ]);
         if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
+            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
         $category = Category::create($validator->validated());
 
-        return $this->Response('create' , 'success' , new categoryResource($category), 200);
+        return ApiResponse::withMessage('success')->withData(new categoryResource($category))->build()->apiResponse();
     }
 
     /**
@@ -44,7 +45,7 @@ class categoryController extends mainController
      */
     public function show(Category $category)
     {
-        return $this->Response('show', 'success', new categoryResource($category->load('authors')->load('books')), 200);
+        return  ApiResponse::withMessage('show')->withData(new categoryResource($category->load('authors')->load('books')))->build()->apiResponse();
     }
 
     /**
@@ -57,11 +58,11 @@ class categoryController extends mainController
             'description' => 'string'
         ]);
         if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
+            return  ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
         $category->update($validator->validated());
 
-        return $this->Response('update' , 'success' , new categoryResource($category), 200);
+        return  ApiResponse::withMessage('update')->withData(new categoryResource($category))->build()->apiResponse();
     }
 
     /**
@@ -70,6 +71,6 @@ class categoryController extends mainController
     public function destroy(Category $category)
     {
         $category = $category->delete();
-        return $this->Response('delete', 'success', $category,200);
+        return ApiResponse::withMessage('delete')->withData($category)->build()->apiResponse();
     }
 }

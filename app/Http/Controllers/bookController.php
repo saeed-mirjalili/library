@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\bookResource;
 use App\Models\Book;
+use App\saeed\Facades\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class bookController extends mainController
+class bookController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +16,11 @@ class bookController extends mainController
     public function index()
     {
         $books = Book::paginate(5);
-        return $this->Response('books', 'success', [
-            'data' => bookResource::collection($books),
+        return ApiResponse::withData(bookResource::collection($books))
+        ->withAppends([
             'links' => bookResource::collection($books)->response()->getData()->links,
             'meta' => bookResource::collection($books)->response()->getData()->meta,
-        ], 200);
+        ])->build()->apiResponse();
     }
 
     /**
@@ -37,7 +38,7 @@ class bookController extends mainController
         ]);
 
         if ($validator->fails()) {
-            return $this->Response('Error', $validator->messages(), null, 500);
+            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
         // create name $ save image
@@ -49,7 +50,7 @@ class bookController extends mainController
         // create book
         $book = Book::create($input);
 
-        return $this->Response('create', 'success', new bookResource($book), 200);
+        return ApiResponse::withData(new bookResource($book))->build()->apiResponse();
     }
 
     /**
@@ -57,7 +58,7 @@ class bookController extends mainController
      */
     public function show(Book $book)
     {
-        return $this->Response('show', 'success', new bookResource($book->load('author')->load('category')), 200);
+        return ApiResponse::withData(new bookResource($book->load('author')->load('category')))->build()->apiResponse();
     }
 
     /**
@@ -74,7 +75,7 @@ class bookController extends mainController
             'book_url' => 'image'
         ]);
         if ($validator->fails()) {
-            return $this->Response('Error', $validator->messages(), null, 500);
+            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
         $input = $validator->validated();
@@ -87,7 +88,7 @@ class bookController extends mainController
 
         $book->update($input);
 
-        return $this->Response('create', 'success', new bookResource($book->load('author')->load('category')), 200);
+        return ApiResponse::withData(new bookResource($book->load('author')->load('category')))->build()->apiResponse();
     }
 
     /**
@@ -96,6 +97,6 @@ class bookController extends mainController
     public function destroy(Book $book)
     {
         $delete = $book->delete();
-        return $this->Response('delete', 'success', $delete, 200);
+        return ApiResponse::withMessage('The deletion was successful')->build()->apiResponse();
     }
 }

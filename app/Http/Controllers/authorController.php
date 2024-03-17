@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\authorResource;
 use App\Models\Author;
+use App\saeed\Facades\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class authorController extends mainController
+class authorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +16,11 @@ class authorController extends mainController
     public function index()
     {
         $author = Author::paginate(4);
-        return $this->Response('list', 'success' ,[
-            'data' => authorResource::collection($author),
+        return ApiResponse::withData(authorResource::collection($author))
+        ->withAppends([
             'links' => authorResource::collection($author)->response()->getData()->links,
             'meta' => authorResource::collection($author)->response()->getData()->meta,
-        ] ,200);
+        ])->build()->apiResponse();
     }
 
     /**
@@ -32,7 +33,7 @@ class authorController extends mainController
             'categories.*' => 'numeric'
         ]);
         if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
+            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
         $validated = $request->except('categories');
@@ -44,8 +45,7 @@ class authorController extends mainController
             }
         }
 
-
-        return $this->Response('create' , 'success' , new authorResource($author), 200);
+        return ApiResponse::withData(new authorResource($author))->build()->apiResponse();
     }
 
     /**
@@ -53,7 +53,7 @@ class authorController extends mainController
      */
     public function show(Author $author)
     {
-        return $this->Response('show', 'success', new authorResource($author->load('books')), 200);
+        return ApiResponse::withData(new authorResource($author->load('books')))->build()->apiResponse();
     }
 
     /**
@@ -66,7 +66,7 @@ class authorController extends mainController
             'categories.*' => 'numeric'
         ]);
         if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
+            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
         if ($request->has('name')) {
@@ -76,7 +76,7 @@ class authorController extends mainController
         if ($request->has('categories')) {
             $author->categories()->sync($request->categories);
         }
-        return $this->Response('update' , 'success' , new authorResource($author), 200);
+        return ApiResponse::withData(new authorResource($author))->build()->apiResponse();
     }
 
     /**
@@ -85,6 +85,8 @@ class authorController extends mainController
     public function destroy(Author $author)
     {
         $author = $author->delete();
-        return $this->Response('delete', 'success', $author,200);
+        return ApiResponse::withMessage('The deletion was successful')->build()->apiResponse();
     }
+
 }
+

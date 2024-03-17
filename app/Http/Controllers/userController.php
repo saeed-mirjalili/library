@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\userResource;
 use App\Models\User;
+use App\saeed\Facades\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 
-class userController extends mainController
+class userController extends Controller
 {
     public function register(Request $request) 
     {
@@ -20,7 +21,7 @@ class userController extends mainController
             'c_password' => 'string|same:password'
         ]);
         if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
+            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
         $input = $validator->validated();
@@ -29,10 +30,7 @@ class userController extends mainController
 
         $token = $user->createToken('myApp')->plainTextToken;
 
-        return $this->Response('register', 'success', [
-            'user' => $user,
-            'token'=>$token
-        ], 200);
+        return ApiResponse::withData($user)->withAppends($token)->build()->apiResponse();
     }
 
     public function login(Request $request) 
@@ -42,26 +40,24 @@ class userController extends mainController
             'password' => 'required|string',
         ]);
         if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
+            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
         $user = User::where('email' , $request->email)->first();
         if (!$user) {
-            return $this->Response('Error', 'user not found', null, 404);
+            return ApiResponse::withMessage('user not found')->withStatus(404)->build()->apiResponse();
         }
         if (!Hash::check($request->password,$user->password)) {
-            return $this->Response('Error', 'password is incorrect', null, 401);
+            return ApiResponse::withMessage('password is incorrect')->withStatus(401)->build()->apiResponse(); 
         }
         $token = $user->createToken('myApp')->plainTextToken;
-        return $this->Response('login', 'success', [
-            'user' => new userResource($user->load('books')),
-            'token'=>$token
-        ], 200);
+        
+        return ApiResponse::withData(new userResource($user->load('books')))->withAppends(['token'=>$token])->build()->apiResponse();
     }
 
     public function logout()
     {    
         auth()->user()->tokens()->delete();
-        return $this->Response('logout', 'logged out',null,200);
+        return ApiResponse::withMessage('logged out')->build()->apiResponse();
     }
 }

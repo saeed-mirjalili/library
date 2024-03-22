@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\authorResource;
 use App\Models\Author;
 use App\saeed\Facades\ApiResponse;
+use App\Services\authorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class authorController extends Controller
 {
+    public function __construct(private authorService $authorService){}
     /**
      * Display a listing of the resource.
      */
@@ -36,16 +38,13 @@ class authorController extends Controller
             return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
-        $validated = $request->except('categories');
-        $author = Author::create($validated);
+        $result = $this->authorService->storeAuthor($request);
 
-        if ($request->has('categories')) {
-            foreach($request->categories as $category){
-                $author->categories()->attach($category);
-            }
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }
 
-        return ApiResponse::withData(new authorResource($author))->build()->apiResponse();
+        return ApiResponse::withMessage('success')->withData(new authorResource($result->data))->build()->apiResponse();
     }
 
     /**
@@ -69,14 +68,12 @@ class authorController extends Controller
             return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
-        if ($request->has('name')) {
-            $author->update($request->except('categories'));
-        }
+        $result = $this->authorService->updateAuthor($request, $author);
 
-        if ($request->has('categories')) {
-            $author->categories()->sync($request->categories);
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }
-        return ApiResponse::withData(new authorResource($author))->build()->apiResponse();
+        return ApiResponse::withMessage('update')->withData(new authorResource($author))->build()->apiResponse();
     }
 
     /**
@@ -84,7 +81,11 @@ class authorController extends Controller
      */
     public function destroy(Author $author)
     {
-        $author = $author->delete();
+        $result = $this->authorService->deleteAuthor($author);
+        
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
         return ApiResponse::withMessage('The deletion was successful')->build()->apiResponse();
     }
 

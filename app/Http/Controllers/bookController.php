@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\bookResource;
 use App\Models\Book;
 use App\saeed\Facades\ApiResponse;
+use App\Services\bookService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class bookController extends Controller
 {
+    public function __construct(private bookService $bookService){}
     /**
      * Display a listing of the resource.
      */
@@ -41,16 +43,13 @@ class bookController extends Controller
             return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
-        // create name $ save image
-        $bookName = md5(uniqid(rand(),true)).'.'. $request->book_url->extension();
-        $request->book_url->storeAs('/books',$bookName,'public');
-        // fix book path
-        $input = $validator->validated();
-        $input['book_url'] = $bookName;
-        // create book
-        $book = Book::create($input);
+        $result = $this->bookService->storeBook($request->all());
 
-        return ApiResponse::withData(new bookResource($book))->build()->apiResponse();
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
+
+        return ApiResponse::withMessage('success')->withData(new bookResource($result->data))->build()->apiResponse();
     }
 
     /**
@@ -78,17 +77,12 @@ class bookController extends Controller
             return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
 
-        $input = $validator->validated();
+        $result = $this->bookService->updateBook($validator->validated(), $book);
 
-        if ($request->has('book_url')) {
-            $bookName = md5(uniqid(rand(),true)).'.'. $request->book_url->extension();
-            $request->book_url->storeAs('/books',$bookName,'public');
-            $input['book_url'] = $bookName;
-        }
+        if(!$result->ok)
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
 
-        $book->update($input);
-
-        return ApiResponse::withData(new bookResource($book->load('author')->load('category')))->build()->apiResponse();
+        return ApiResponse::withMessage('error')->withData(new bookResource(($result->data)->load('author')->load('category')))->build()->apiResponse();
     }
 
     /**
@@ -96,7 +90,10 @@ class bookController extends Controller
      */
     public function destroy(Book $book)
     {
-        $delete = $book->delete();
+        $result = $this->bookService->deleteBook($book);
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
         return ApiResponse::withMessage('The deletion was successful')->build()->apiResponse();
     }
 }

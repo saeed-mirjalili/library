@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\categoryResource;
 use App\Models\Category;
 use App\saeed\Facades\ApiResponse;
+use App\Services\categoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class categoryController extends Controller
 {
+    public function __construct(private categoryService $categoryService){}
     /**
      * Display a listing of the resource.
      */
@@ -35,9 +37,13 @@ class categoryController extends Controller
         if ($validator->fails()) {
             return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
-        $category = Category::create($validator->validated());
 
-        return ApiResponse::withMessage('success')->withData(new categoryResource($category))->build()->apiResponse();
+        $result = $this->categoryService->storeCategory($validator->validated());
+
+        if(!$result->ok)
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+
+        return ApiResponse::withMessage('success')->withData(new categoryResource($result->data))->build()->apiResponse();
     }
 
     /**
@@ -60,7 +66,11 @@ class categoryController extends Controller
         if ($validator->fails()) {
             return  ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
         }
-        $category->update($validator->validated());
+
+        $result = $this->categoryService->updateCategory($validator->validated(), $category);
+
+        if(!$result->ok)
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
 
         return  ApiResponse::withMessage('update')->withData(new categoryResource($category))->build()->apiResponse();
     }
@@ -70,7 +80,9 @@ class categoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category = $category->delete();
-        return ApiResponse::withMessage('delete')->withData($category)->build()->apiResponse();
+        $result = $this->categoryService->deleteCategory($category);
+        if(!$result->ok)
+            return ApiResponse::withMessage('delete')->withData($result->data)->build()->apiResponse();
+        return ApiResponse::withMessage('delete')->withData($result->data)->build()->apiResponse();
     }
 }

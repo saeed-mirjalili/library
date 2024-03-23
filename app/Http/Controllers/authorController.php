@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\ApiRequests\library\authorStoreRequest;
+use App\Http\ApiRequests\library\authorUpdateRequest;
 use App\Http\Resources\authorResource;
 use App\Models\Author;
 use App\saeed\Facades\ApiResponse;
 use App\Services\authorService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class authorController extends Controller
 {
@@ -18,25 +18,14 @@ class authorController extends Controller
     public function index()
     {
         $author = Author::paginate(4);
-        return ApiResponse::withData(authorResource::collection($author))
-        ->withAppends([
-            'links' => authorResource::collection($author)->response()->getData()->links,
-            'meta' => authorResource::collection($author)->response()->getData()->meta,
-        ])->build()->apiResponse();
+        return ApiResponse::withData(authorResource::collection($author)->resource)->build()->apiResponse();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(authorStoreRequest $request)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string',
-            'categories.*' => 'numeric'
-        ]);
-        if ($validator->fails()) {
-            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
-        }
 
         $result = $this->authorService->storeAuthor($request);
 
@@ -58,15 +47,8 @@ class authorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Author $author)
+    public function update(authorUpdateRequest $request, Author $author)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'string',
-            'categories.*' => 'numeric'
-        ]);
-        if ($validator->fails()) {
-            return ApiResponse::withData($validator->messages())->withStatus(500)->build()->apiResponse();
-        }
 
         $result = $this->authorService->updateAuthor($request, $author);
 

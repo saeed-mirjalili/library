@@ -2,6 +2,7 @@
 
 namespace App\Http\ApiRequests\library;
 
+use App\Models\Book;
 use App\saeed\apiFormRequest;
 
 class bookStoreRequest extends apiFormRequest
@@ -21,13 +22,6 @@ class bookStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required|string',
-            'summary' => 'required|string',
-            'edition' => 'required|date_format:Y',
-            'author_id' => 'required|numeric',
-            'category_id' => 'required|numeric',
-            'book_url' => 'required|image'
-        ];
+        return Book::rules();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\ApiRequests\library;
 
+use App\Models\Author;
 use App\saeed\apiFormRequest;
 
 class authorStoreRequest extends apiFormRequest
@@ -21,9 +22,6 @@ class authorStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required|string',
-            'categories.*' => 'numeric'
-        ];
+        return Author::rules();
     }
 }

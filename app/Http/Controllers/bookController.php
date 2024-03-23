@@ -55,7 +55,7 @@ class bookController extends Controller
         if(!$result->ok)
             return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
 
-        return ApiResponse::withMessage('error')->withData(new bookResource(($result->data)->load('author')->load('category')))->build()->apiResponse();
+        return ApiResponse::withMessage('success')->withData(new bookResource(($result->data)->load('author')->load('category')))->build()->apiResponse();
     }
 
     /**

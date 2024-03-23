@@ -2,15 +2,25 @@
 
 namespace App\Models;
 
+use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Book extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory,SoftDeletes,HasRules;
 
     protected $guarded=[];
+
+    protected static $rules = [
+        'name' => 'required|string',
+        'summary' => 'required|string',
+        'edition' => 'required|date_format:Y',
+        'author_id' => 'required|numeric',
+        'category_id' => 'required|numeric',
+        'book_url' => 'required|image'
+    ];
 
     public function author() {
         return $this->belongsTo(Author::class);

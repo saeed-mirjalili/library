@@ -2,6 +2,7 @@
 
 namespace App\Http\ApiRequests\library;
 
+use App\Models\Category;
 use App\saeed\apiFormRequest;
 
 class categoryStoreRequest extends apiFormRequest
@@ -21,9 +22,6 @@ class categoryStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required|string',
-            'description' => 'required|string'
-        ];
+        return Category::rules();
     }
 }

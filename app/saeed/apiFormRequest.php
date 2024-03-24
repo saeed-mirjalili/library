@@ -14,4 +14,11 @@ class apiFormRequest extends FormRequest
             'error' => $validator->errors()
         ],status:422));
     }
+
+    protected function failedAuthorization()
+    {
+        throw new HttpResponseException(response()->json([
+            'error' => 'access denied'
+        ],status:403));
+    }
 }

@@ -8,7 +8,7 @@ use App\Http\Resources\bookResource;
 use App\Models\Book;
 use App\saeed\Facades\ApiResponse;
 use App\Services\bookService;
-
+use Illuminate\Support\Facades\Gate;
 
 class bookController extends Controller
 {
@@ -18,6 +18,7 @@ class bookController extends Controller
      */
     public function index()
     {
+
         $books = Book::paginate(5);
         return ApiResponse::withData(bookResource::collection($books)->resource)->build()->apiResponse();
     }

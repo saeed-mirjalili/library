@@ -28,13 +28,11 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::post('register' ,[userController::class , 'register'])->name('register');
+Route::post('register' ,[userController::class , 'register']);
 Route::post('login' ,[userController::class , 'login'])->name('login');
 
-
-    Route::group(['middleware'=>['auth:sanctum']], function () {
-
-        Route::post('logout', [userController::class , 'logout']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::delete('logout', [userController::class , 'logout']);
 
         Route::apiResource('categories' ,categoryController::class);
         Route::apiResource('authors' ,authorController::class);
@@ -43,6 +41,5 @@ Route::post('login' ,[userController::class , 'login'])->name('login');
         Route::get('panel/{book}' ,[panelController::class , 'addBook']);
         Route::get('panel' ,[panelController::class , 'showBook']);
         Route::post('panel/add' ,[panelController::class , 'addBooks']);
-        Route::post('panel/remove' ,[panelController::class , 'removeBooks']);
-
-});
+        Route::post('panel/remove' ,[panelController::class , 'removeBooks']);        
+    });

@@ -29,12 +29,12 @@ class Handler extends ExceptionHandler
             //
         });
     }
-    public function render($request, Throwable $e)
-    {
-        if ($e instanceof ModelNotFoundException) {
-            DB::rollBack();
-            return response()->json(['message' => 'Not Found!'], 404);
-        }
-    }
+    // public function render($request, Throwable $e)
+    // {
+    //     if ($e instanceof ModelNotFoundException) {
+    //         DB::rollBack();
+    //         return response()->json(['message' => 'Not Found!'], 404);
+    //     }
+    // }
     
 }

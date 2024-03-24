@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\ApiRequests\library;
+namespace App\Http\ApiRequests\user;
 
-use App\Models\Book;
+use App\Models\User;
 use App\saeed\apiFormRequest;
-use Illuminate\Support\Facades\Gate;
 
-class bookStoreRequest extends apiFormRequest
+class loginUserRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('createNewBook');
+        return true;
     }
 
     /**
@@ -23,6 +22,6 @@ class bookStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Book::rules();
+        return User::rules();
     }
 }

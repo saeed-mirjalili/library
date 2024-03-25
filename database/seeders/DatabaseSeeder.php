@@ -7,6 +7,8 @@ namespace Database\Seeders;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -18,8 +20,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        \App\Models\Book::factory(10)->create();
-        \App\Models\User::factory(10)->create();
+        Book::factory(10)->create();
+
+        User::factory()->create([
+            'name' => 'AdminUser',
+            'email' => 'admin@example.com',
+            'password' => 'password'
+        ]);
+
+        User::factory(10)->create();
+        $this->call(RoleSeeder::class);
+        $this->call(PermissionSeeder::class);
+
 
         // Get all the category attaching up to 3 random category to each author
         $category = Category::all();
@@ -30,7 +42,6 @@ class DatabaseSeeder extends Seeder
             ); 
         });
 
-        // Get all the category attaching up to 3 random category to each author
         $book = Book::all();
         // Populate the pivot table
         User::all()->each(function ($user) use ($book) { 
@@ -38,9 +49,22 @@ class DatabaseSeeder extends Seeder
                 $book->random(rand(1, 3))->pluck('id')->toArray()
             ); 
         });
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        
+        $user = User::all();
+        // Populate the pivot table
+        Role::all()->each(function ($role) use ($user) { 
+            $role->users()->attach(
+                $user->random(rand(1, 3))->pluck('id')->toArray()
+            ); 
+        });
+
+        $role = Role::all();
+        // Populate the pivot table
+        Permission::all()->each(function ($permission) use ($role) { 
+            $permission->roles()->attach(
+                $role->random(rand(1, 3))->pluck('id')->toArray()
+            ); 
+        });
+
     }
 }

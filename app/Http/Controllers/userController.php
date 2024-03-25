@@ -2,63 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\ApiRequests\user\loginUserRequest;
+use App\Http\ApiRequests\user\registerUserRequest;
 use App\Http\Resources\userResource;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\saeed\Facades\ApiResponse;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
-
-class userController extends mainController
+class userController extends Controller
 {
-    public function register(Request $request) {
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string',
-            'c_password' => 'string|same:password'
-        ]);
-        if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
-        }
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email, 
-            'password' => Hash::make($request->password)
-        ]);
-        $token = $user->createToken('myApp')->plainTextToken;
-        return $this->Response('register', 'success', [
-            'user' => $user,
-            'token'=>$token
-        ], 200);
+    public function register(registerUserRequest $request) 
+    {
+
+        $input = $request->validated();
+        $input['password'] = Hash::make($input['password']);
+        $user = User::create($input);
+
+        $token = $user->createToken($request->header('User-Agent'))->plainTextToken;
+
+        return ApiResponse::withData(new userResource($user))->withAppends(['token'=>$token])->build()->apiResponse();
     }
 
-    public function login(Request $request) {
-        $validator = Validator::make($request->all(),[
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-        if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
-        }
+    public function login(loginUserRequest $request) 
+    {
 
         $user = User::where('email' , $request->email)->first();
         if (!$user) {
-            return $this->Response('Error', 'user not found', null, 404);
+            return ApiResponse::withMessage('user not found')->withStatus(401)->build()->apiResponse();
         }
         if (!Hash::check($request->password,$user->password)) {
-            return $this->Response('Error', 'password is incorrect', null, 401);
+            return ApiResponse::withMessage('password is incorrect')->withStatus(401)->build()->apiResponse(); 
         }
-        $token = $user->createToken('myApp')->plainTextToken;
-        return $this->Response('login', 'success', [
-            'user' => new userResource($user->load('books')),
-            'token'=>$token
-        ], 200);
+        $token = $user->createToken($request->header('User-Agent'))->plainTextToken;
+        
+        return ApiResponse::withData(new userResource($user->load('books')))->withAppends(['token'=>$token])->build()->apiResponse();
     }
 
-    public function logout() {
-        
-        auth()->user()->tokens()->delete();
-        return $this->Response('logout', 'logged out',null,200);
+    public function logout()
+    {    
+        auth()->user()->currentAccessToken()->delete();
+        return ApiResponse::withMessage('logged out')->build()->apiResponse();
     }
 }

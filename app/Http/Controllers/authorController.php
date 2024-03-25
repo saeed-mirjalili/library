@@ -2,49 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\ApiRequests\library\authorStoreRequest;
+use App\Http\ApiRequests\library\authorUpdateRequest;
 use App\Http\Resources\authorResource;
 use App\Models\Author;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\saeed\Facades\ApiResponse;
+use App\Services\authorService;
 
-class authorController extends mainController
+class authorController extends Controller
 {
+    public function __construct(private authorService $authorService){}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $author = Author::paginate(4);
-        return $this->Response('list', 'success' ,[
-            'data' => authorResource::collection($author),
-            'links' => authorResource::collection($author)->response()->getData()->links,
-            'meta' => authorResource::collection($author)->response()->getData()->meta,
-        ] ,200);
+        return ApiResponse::withData(authorResource::collection($author)->resource)->build()->apiResponse();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(authorStoreRequest $request)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string',
-            'categories.*' => 'numeric'
-        ]);
-        if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
-        }
-        $author = Author::create([
-            'name' => $request->name,
-        ]);
-        if ($request->has('categories')) {
-            foreach($request->categories as $category){
-                $author->categories()->attach($category);
-            }
+
+        $result = $this->authorService->storeAuthor($request);
+
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }
 
-
-        return $this->Response('create' , 'success' , new authorResource($author), 200);
+        return ApiResponse::withMessage('success')->withData(new authorResource($result->data))->build()->apiResponse();
     }
 
     /**
@@ -52,32 +41,21 @@ class authorController extends mainController
      */
     public function show(Author $author)
     {
-        return $this->Response('show', 'success', new authorResource($author->load('books')), 200);
+        return ApiResponse::withData(new authorResource($author->load('books')))->build()->apiResponse();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Author $author)
+    public function update(authorUpdateRequest $request, Author $author)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'string',
-            'categories.*' => 'numeric'
-        ]);
-        if ($validator->fails()) {
-            return $this->Response('Error',$validator->messages(),null,500);
-        }
 
-        if ($request->has('name')) {
-            $author->update([
-                'name' => $request->name,
-            ]);
-        }
+        $result = $this->authorService->updateAuthor($request, $author);
 
-        if ($request->has('categories')) {
-            $author->categories()->sync($request->categories);
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }
-        return $this->Response('update' , 'success' , new authorResource($author), 200);
+        return ApiResponse::withMessage('update')->withData(new authorResource($author))->build()->apiResponse();
     }
 
     /**
@@ -85,7 +63,13 @@ class authorController extends mainController
      */
     public function destroy(Author $author)
     {
-        $author = $author->delete();
-        return $this->Response('delete', 'success', $author,200);
+        $result = $this->authorService->deleteAuthor($author);
+        
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
+        return ApiResponse::withMessage('The deletion was successful')->build()->apiResponse();
     }
+
 }
+

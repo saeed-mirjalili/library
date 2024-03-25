@@ -2,56 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\ApiRequests\library\bookStoreRequest;
+use App\Http\ApiRequests\library\bookUpdateRequest;
 use App\Http\Resources\bookResource;
 use App\Models\Book;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\saeed\Facades\ApiResponse;
+use App\Services\bookService;
+use Illuminate\Support\Facades\Gate;
 
-class bookController extends mainController
+class bookController extends Controller
 {
+    public function __construct(private bookService $bookService){}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+
         $books = Book::paginate(5);
-        return $this->Response('books', 'success', [
-            'data' => bookResource::collection($books),
-            'links' => bookResource::collection($books)->response()->getData()->links,
-            'meta' => bookResource::collection($books)->response()->getData()->meta,
-        ], 200);
+        return ApiResponse::withData(bookResource::collection($books)->resource)->build()->apiResponse();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(bookStoreRequest $request)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string',
-            'summary' => 'required|string',
-            'edition' => 'required|date_format:Y',
-            'author_id' => 'required|numeric',
-            'category_id' => 'required|numeric',
-            'book_url' => 'required|image'
-        ]);
+        $result = $this->bookService->storeBook($request->all());
 
-        if ($validator->fails()) {
-            return $this->Response('Error', $validator->messages(), null, 500);
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }
 
-        $bookName = md5(uniqid(rand(),true)).'.'. $request->book_url->extension();
-        $request->book_url->storeAs('/books',$bookName,'public');
-
-        $book = Book::create([
-            'name' => $request->name,
-            'summary' => $request->summary,
-            'edition' => $request->edition,
-            'author_id' => $request->author_id,
-            'category_id' => $request->category_id,
-            'book_url' => $bookName
-        ]);
-        return $this->Response('create', 'success', new bookResource($book), 200);
+        return ApiResponse::withMessage('success')->withData(new bookResource($result->data))->build()->apiResponse();
     }
 
     /**
@@ -59,42 +42,21 @@ class bookController extends mainController
      */
     public function show(Book $book)
     {
-        return $this->Response('show', 'success', new bookResource($book->load('author')
-                                                                        ->load('category')), 200);
+        return ApiResponse::withData(new bookResource($book->load('author')->load('category')))->build()->apiResponse();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Book $book)
+    public function update(bookUpdateRequest $request, Book $book)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'string',
-            'summary' => 'string',
-            'edition' => 'date_format:Y',
-            'author_id' => 'numeric',
-            'category_id' => 'numeric',
-            'book_url' => 'image'
-        ]);
-        if ($validator->fails()) {
-            return $this->Response('Error', $validator->messages(), null, 500);
-        }
 
-        if ($request->has('book_url')) {
-            $bookName = md5(uniqid(rand(),true)).'.'. $request->book_url->extension();
-            $request->book_url->storeAs('/books',$bookName,'public');
-        }
+        $result = $this->bookService->updateBook($request->validated(), $book);
 
-        $book->update([
-            'name' => $request->name,
-            'summary' => $request->summary,
-            'edition' => $request->edition,
-            'author_id' => $request->author_id,
-            'category_id' => $request->category_id,
-            'book_url' => $request->has('book_url') ? $bookName : $book->book_url
-        ]);
-        return $this->Response('create', 'success', new bookResource($book->load('author')
-                                                                          ->load('category')), 200);
+        if(!$result->ok)
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+
+        return ApiResponse::withMessage('success')->withData(new bookResource(($result->data)->load('author')->load('category')))->build()->apiResponse();
     }
 
     /**
@@ -102,8 +64,10 @@ class bookController extends mainController
      */
     public function destroy(Book $book)
     {
-        $delete = $book->delete();
-        return $this->Response('delete', 'success', $delete, 200);
+        $result = $this->bookService->deleteBook($book);
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
+        return ApiResponse::withMessage('The deletion was successful')->build()->apiResponse();
     }
-
 }

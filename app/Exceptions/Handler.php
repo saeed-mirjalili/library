@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -27,4 +29,12 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    // public function render($request, Throwable $e)
+    // {
+    //     if ($e instanceof ModelNotFoundException) {
+    //         DB::rollBack();
+    //         return response()->json(['message' => 'Not Found!'], 404);
+    //     }
+    // }
+    
 }

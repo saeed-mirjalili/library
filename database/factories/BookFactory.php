@@ -24,7 +24,8 @@ class BookFactory extends Factory
             'edition' => fake()->numberBetween(1900, 2023),
             'author_id' => Author::factory()->create()->id,
             'category_id' => Category::factory()->create()->id,
-            'book_url' => fake()->unique()->image('public/storage/books/',340,280, null, false)
+            'book_url' => fake()->numberBetween(1, 5) . '.pdf'
         ];
     }
 }
+//->unique()->image('public/storage/books/',340,280, null, false)

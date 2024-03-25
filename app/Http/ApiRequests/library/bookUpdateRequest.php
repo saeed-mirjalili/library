@@ -29,7 +29,7 @@ class bookUpdateRequest extends apiFormRequest
             'edition' => 'date_format:Y',
             'author_id' => 'numeric',
             'category_id' => 'numeric',
-            'book_url' => 'image'
+            'book_url' => 'mimes:pdf'
         ]);
     }
 }

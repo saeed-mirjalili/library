@@ -19,7 +19,7 @@ class Book extends Model
         'edition' => 'required|date_format:Y',
         'author_id' => 'required|numeric',
         'category_id' => 'required|numeric',
-        'book_url' => 'required|image'
+        'book_url' => 'required|mimes:pdf'
     ];
 
     public function author() {

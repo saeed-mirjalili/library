@@ -21,24 +21,17 @@ class DatabaseSeeder extends Seeder
     {
 
         Book::factory(10)->create();
+
+        User::factory()->create([
+            'name' => 'AdminUser',
+            'email' => 'admin@example.com',
+            'password' => 'password'
+        ]);
+
         User::factory(10)->create();
-        Role::factory(10)->create();
-        Permission::factory()->state([
-            'name'=>'exhibit',
-            'display_name'=>'exhibitor'
-        ])->create();
-        Permission::factory()->state([
-            'name'=>'change',
-            'display_name'=>'changer'
-        ])->create();
-        Permission::factory()->state([
-            'name'=>'create',
-            'display_name'=>'creator'
-        ])->create();
-        Permission::factory()->state([
-            'name'=>'delete',
-            'display_name'=>'Detergent'
-        ])->create();
+        $this->call(RoleSeeder::class);
+        $this->call(PermissionSeeder::class);
+
 
         // Get all the category attaching up to 3 random category to each author
         $category = Category::all();
@@ -72,9 +65,6 @@ class DatabaseSeeder extends Seeder
                 $role->random(rand(1, 3))->pluck('id')->toArray()
             ); 
         });
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+
     }
 }

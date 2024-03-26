@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -23,8 +23,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('createNewBook', function (User $user) {
-            return $user->email === 'fcassin@example.org';
+        Permission::with('roles')->each(function ($permission) {
+            Gate::define($permission->name, function ($user) use($permission){
+                return !!$permission->roles->intersect($user->roles)->count();
+            });
         });
     }
 }

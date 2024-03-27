@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\library;
 
-use App\Models\Author;
+use App\Models\library\Author;
+use App\Services\serviceResult;
+use App\Services\serviceWrapper;
 
 class authorService
 {
@@ -11,7 +13,7 @@ class authorService
         return app(serviceWrapper::class)(function () use($inputs) {
             $validated = $inputs->except('categories');
             $author = Author::create($validated);
-    
+
             if ($inputs->has('categories')) {
                 foreach($inputs->categories as $category){
                     $author->categories()->attach($category);
@@ -26,7 +28,7 @@ class authorService
             if ($inputs->has('name')) {
                 $author->update($inputs->except('categories'));
             }
-    
+
             if ($inputs->has('categories')) {
                 $author->categories()->sync($inputs->categories);
             }

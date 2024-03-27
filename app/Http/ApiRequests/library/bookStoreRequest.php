@@ -2,7 +2,7 @@
 
 namespace App\Http\ApiRequests\library;
 
-use App\Models\Book;
+use App\Models\library\Book;
 use App\saeed\apiFormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,7 +13,7 @@ class bookStoreRequest extends apiFormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('createNewBook');
+        return Gate::allows('create');
     }
 
     /**

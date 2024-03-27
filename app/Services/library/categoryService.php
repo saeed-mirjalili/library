@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\library;
 
-use App\Models\Category;
+use App\Models\library\Category;
+use App\Services\serviceResult;
+use App\Services\serviceWrapper;
 
 class categoryService
 {

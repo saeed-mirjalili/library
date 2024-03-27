@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\user;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\library\Book;
+use App\Models\panel\Role;
 use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;

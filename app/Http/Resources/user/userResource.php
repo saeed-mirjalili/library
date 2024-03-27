@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\user;
 
+use App\Http\Resources\library\bookResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,9 +16,10 @@ class userResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
             'email' => $this->email,
+            'name' => $this->name,
             'books' => bookResource::collection($this->whenLoaded('books')),
+            'token' => $this->token
         ];
     }
 }

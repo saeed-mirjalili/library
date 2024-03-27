@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\library;
 
-use App\Models\Book;
+use App\Models\library\Book;
+use App\Services\serviceResult;
+use App\Services\serviceWrapper;
 
 class bookService
 {

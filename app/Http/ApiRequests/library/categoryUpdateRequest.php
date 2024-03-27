@@ -2,7 +2,7 @@
 
 namespace App\Http\ApiRequests\library;
 
-use App\Models\Category;
+use App\Models\library\Category;
 use App\saeed\apiFormRequest;
 
 class categoryUpdateRequest extends apiFormRequest

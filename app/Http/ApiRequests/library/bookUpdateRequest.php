@@ -2,8 +2,9 @@
 
 namespace App\Http\ApiRequests\library;
 
-use App\Models\Book;
+use App\Models\library\Book;
 use App\saeed\apiFormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class bookUpdateRequest extends apiFormRequest
 {
@@ -12,7 +13,7 @@ class bookUpdateRequest extends apiFormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('change');
     }
 
     /**

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\library;
 
 use App\Http\ApiRequests\library\bookStoreRequest;
 use App\Http\ApiRequests\library\bookUpdateRequest;
-use App\Http\Resources\bookResource;
-use App\Models\Book;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\library\bookResource;
+use App\Models\library\Book;
 use App\saeed\Facades\ApiResponse;
-use App\Services\bookService;
+use App\Services\library\bookService;
 use Illuminate\Support\Facades\Gate;
 
 class bookController extends Controller
@@ -18,6 +19,8 @@ class bookController extends Controller
      */
     public function index()
     {
+        if (! Gate::allows('exhibit'))
+            abort(403);
 
         $books = Book::paginate(5);
         return ApiResponse::withData(bookResource::collection($books)->resource)->build()->apiResponse();
@@ -64,6 +67,9 @@ class bookController extends Controller
      */
     public function destroy(Book $book)
     {
+        if (! Gate::allows('delete'))
+            abort(403);
+
         $result = $this->bookService->deleteBook($book);
         if (!$result->ok) {
             return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();

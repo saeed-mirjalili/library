@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\library;
 
+use App\Models\user\User;
 use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

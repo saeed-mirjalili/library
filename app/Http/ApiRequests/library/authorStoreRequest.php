@@ -2,7 +2,7 @@
 
 namespace App\Http\ApiRequests\library;
 
-use App\Models\Author;
+use App\Models\library\Author;
 use App\saeed\apiFormRequest;
 
 class authorStoreRequest extends apiFormRequest

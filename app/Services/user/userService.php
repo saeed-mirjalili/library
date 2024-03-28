@@ -41,4 +41,9 @@ class userService
             return $user;
         });
     }
+    public function logoutUser() : serviceResult {
+        return app(serviceWrapper::class)(function () {
+            auth()->user()->currentAccessToken()->delete();
+        });
+    }
 }

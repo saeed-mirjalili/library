@@ -40,7 +40,11 @@ class userController extends Controller
 
     public function logout()
     {
-        auth()->user()->currentAccessToken()->delete();
+        $result = $this->userService->logoutUser();
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
+
         return ApiResponse::withMessage('logged out')->build()->apiResponse();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\ApiRequests\library;
 
-use App\Models\library\Author;
+use App\Models\Author;
 use App\saeed\apiFormRequest;
 
 class authorUpdateRequest extends apiFormRequest

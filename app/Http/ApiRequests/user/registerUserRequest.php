@@ -2,7 +2,7 @@
 
 namespace App\Http\ApiRequests\user;
 
-use App\Models\User;
+use App\Models\user\User;
 use App\saeed\apiFormRequest;
 
 class registerUserRequest extends apiFormRequest

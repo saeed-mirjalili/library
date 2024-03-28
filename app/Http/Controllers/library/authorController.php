@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\library;
 
 use App\Http\ApiRequests\library\authorStoreRequest;
 use App\Http\ApiRequests\library\authorUpdateRequest;
-use App\Http\Resources\authorResource;
-use App\Models\Author;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\library\authorResource;
+use App\Models\library\Author;
 use App\saeed\Facades\ApiResponse;
-use App\Services\authorService;
+use App\Services\library\authorService;
 
 class authorController extends Controller
 {
@@ -64,7 +65,7 @@ class authorController extends Controller
     public function destroy(Author $author)
     {
         $result = $this->authorService->deleteAuthor($author);
-        
+
         if (!$result->ok) {
             return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }

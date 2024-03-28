@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\panel\Permission;
 use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder

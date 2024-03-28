@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\ApiRequests\library;
+namespace App\Http\ApiRequests;
 
-use App\Models\Author;
 use App\saeed\apiFormRequest;
 
-class authorStoreRequest extends apiFormRequest
+class panelRemoveBookRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,6 +21,9 @@ class authorStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Author::rules();
+        return [
+            'books' => 'required|array|min:1',
+            'books.*' => 'numeric'
+        ];
     }
 }

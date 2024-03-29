@@ -6,10 +6,8 @@ use App\Http\ApiRequests\user\loginUserRequest;
 use App\Http\ApiRequests\user\registerUserRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\user\userResource;
-use App\Models\user\User;
 use App\saeed\Facades\ApiResponse;
 use App\Services\user\userService;
-use Illuminate\Support\Facades\Hash;
 
 class userController extends Controller
 {

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\ApiRequests;
+namespace App\Http\ApiRequests\admin;
 
+use App\Models\panel\Role;
 use App\saeed\apiFormRequest;
 
-class panelAddBooksRequest extends apiFormRequest
+class storeRoleRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,9 +22,9 @@ class panelAddBooksRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return [
-            'books' => 'required|array|min:1',
-            'books.*' => 'numeric'
-        ];
+        return Role::rules([
+            'name' => 'required',
+            'display_name' => 'required'
+        ]);
     }
 }

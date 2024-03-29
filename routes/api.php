@@ -5,6 +5,8 @@ use App\Http\Controllers\library\bookController;
 use App\Http\Controllers\library\categoryController;
 use App\Http\Controllers\user\panelController;
 use App\Http\Controllers\user\userController;
+use \App\Http\Controllers\admin\roleController;
+use \App\Http\Controllers\admin\permissionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,6 +38,8 @@ Route::post('login' ,[userController::class , 'login'])->name('login');
         Route::apiResource('categories' ,categoryController::class);
         Route::apiResource('authors' ,authorController::class);
         Route::apiResource('books' ,bookController::class);
+        Route::apiResource('roles' ,roleController::class);
+        Route::apiResource('permissions' ,permissionController::class)->only(['index','store','destroy']);
 
         Route::get('panel/{book}' ,[panelController::class , 'addBook']);
         Route::get('panel' ,[panelController::class , 'showBook']);

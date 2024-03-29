@@ -19,11 +19,12 @@ class bookController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('exhibit'))
-            abort(403);
+        $result = $this->bookService->indexBook();
 
-        $books = Book::paginate(5);
-        return ApiResponse::withData(bookResource::collection($books)->resource)->build()->apiResponse();
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
+        return ApiResponse::withData(bookResource::collection($result->data)->resource)->build()->apiResponse();
     }
 
     /**
@@ -45,7 +46,12 @@ class bookController extends Controller
      */
     public function show(Book $book)
     {
-        return ApiResponse::withData(new bookResource($book->load('author')->load('category')))->build()->apiResponse();
+        $result = $this->bookService->showBook($book);
+
+        if (!$result->ok) {
+            return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
+        }
+        return ApiResponse::withData(new bookResource($result->data->load('author')->load('category')))->build()->apiResponse();
     }
 
     /**

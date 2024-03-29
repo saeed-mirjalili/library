@@ -13,7 +13,6 @@ class panelService
         return app(serviceWrapper::class)(function () use($inputs) {
             $user = auth()->user();
             $inputs->users()->attach($user);
-
         });
     }
     public function addBooks(mixed $inputs): serviceResult

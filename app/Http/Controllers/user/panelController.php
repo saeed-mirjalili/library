@@ -5,13 +5,10 @@ namespace App\Http\Controllers\user;
 use App\Http\ApiRequests\panelAddBooksRequest;
 use App\Http\ApiRequests\panelRemoveBookRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\library\bookResource;
 use App\Http\Resources\user\userResource;
 use App\Models\library\Book;
 use App\saeed\Facades\ApiResponse;
 use App\Services\panelService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class panelController extends Controller
 {

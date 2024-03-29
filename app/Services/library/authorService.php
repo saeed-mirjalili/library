@@ -8,17 +8,28 @@ use App\Services\serviceWrapper;
 
 class authorService
 {
+    public function indexAuthor(): serviceResult
+    {
+        return app(serviceWrapper::class)(function () {
+            return Author::paginate(4);
+        });
+    }
     public function storeAuthor(mixed $inputs): serviceResult
     {
         return app(serviceWrapper::class)(function () use($inputs) {
             $validated = $inputs->except('categories');
             $author = Author::create($validated);
-
             if ($inputs->has('categories')) {
                 foreach($inputs->categories as $category){
                     $author->categories()->attach($category);
                 }
             }
+            return $author;
+        });
+    }
+    public function showAuthor(mixed $author): serviceResult
+    {
+        return app(serviceWrapper::class)(function () use($author) {
             return $author;
         });
     }

@@ -5,9 +5,21 @@ namespace App\Services\library;
 use App\Models\library\Book;
 use App\Services\serviceResult;
 use App\Services\serviceWrapper;
+use Illuminate\Support\Facades\Gate;
 
 class bookService
 {
+
+    public function indexBook(): serviceResult
+    {
+        return app(serviceWrapper::class)(function (){
+            if (! Gate::allows('exhibit'))
+                abort(403);
+
+            $books = Book::paginate(5);
+            return $books;
+        });
+    }
     public function storeBook(array $inputs): serviceResult
     {
         return app(serviceWrapper::class)(function () use($inputs) {
@@ -18,6 +30,12 @@ class bookService
             $inputs['book_url'] = $bookName;
             // create book
             return Book::create($inputs);
+        });
+    }
+    public function showBook(mixed $book): serviceResult
+    {
+        return app(serviceWrapper::class)(function () use($book) {
+            return $book;
         });
     }
     public function updateBook(array $inputs, Book $book) : serviceResult

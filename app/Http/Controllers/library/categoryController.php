@@ -18,8 +18,8 @@ class categoryController extends Controller
      */
     public function index()
     {
-        $category = Category::paginate(4);
-        return ApiResponse::withMessage('list')->withData(categoryResource::collection($category)->resource)->build()->apiResponse();
+        $result = $this->categoryService->indexCategory();
+        return ApiResponse::withMessage('list')->withData(categoryResource::collection($result->data)->resource)->build()->apiResponse();
     }
 
     /**
@@ -41,7 +41,8 @@ class categoryController extends Controller
      */
     public function show(Category $category)
     {
-        return  ApiResponse::withMessage('show')->withData(new categoryResource($category->load('authors')->load('books')))->build()->apiResponse();
+        $result = $this->categoryService->showCategory($category);
+        return  ApiResponse::withMessage('show')->withData(new categoryResource($result->data->load('authors')->load('books')))->build()->apiResponse();
     }
 
     /**

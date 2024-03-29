@@ -21,6 +21,10 @@ class bookController extends Controller
     {
         $result = $this->bookService->indexBook();
 
+        if (isset($result->data['status'])) {
+            return ApiResponse::withMessage($result->data['message'])->withStatus($result->data['status'])->build()->apiResponse();
+        }
+
         if (!$result->ok) {
             return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }
@@ -73,10 +77,10 @@ class bookController extends Controller
      */
     public function destroy(Book $book)
     {
-        if (! Gate::allows('delete'))
-            abort(403);
-
         $result = $this->bookService->deleteBook($book);
+        if (isset($result->data['status'])) {
+            return ApiResponse::withMessage($result->data['message'])->withStatus($result->data['status'])->build()->apiResponse();
+        }
         if (!$result->ok) {
             return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }

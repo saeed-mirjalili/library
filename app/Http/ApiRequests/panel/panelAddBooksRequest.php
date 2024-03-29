@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\ApiRequests;
+namespace App\Http\ApiRequests\panel;
 
 use App\saeed\apiFormRequest;
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\user;
 
-use App\Http\ApiRequests\panelAddBooksRequest;
-use App\Http\ApiRequests\panelRemoveBookRequest;
+use App\Http\ApiRequests\panel\panelAddBooksRequest;
+use App\Http\ApiRequests\panel\panelRemoveBookRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\user\userResource;
 use App\Models\library\Book;

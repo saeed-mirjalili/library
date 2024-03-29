@@ -13,9 +13,12 @@ class bookService
     public function indexBook(): serviceResult
     {
         return app(serviceWrapper::class)(function (){
-            if (! Gate::allows('exhibit'))
-                abort(403);
-
+            if (! Gate::allows('exhibite')){
+                return [
+                    'status' => 403,
+                    'message' => 'access denied'
+                ];
+            }
             $books = Book::paginate(5);
             return $books;
         });
@@ -52,6 +55,12 @@ class bookService
     }
     public function deleteBook(Book $book) : serviceResult {
         return app(serviceWrapper::class)(function () use($book) {
+            if (! Gate::allows('delete')){
+                return [
+                    'status' => 403,
+                    'message' => 'access denied'
+                ];
+            }
             return $book->delete();
         });
     }

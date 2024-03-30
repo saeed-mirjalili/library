@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\ApiRequests\admin;
+namespace App\Http\ApiRequests\admin\permission;
 
-use App\Models\panel\Role;
 use App\saeed\apiFormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class updateRoleRequest extends apiFormRequest
+class permissionDeleteRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('delete');
     }
 
     /**
@@ -22,6 +22,8 @@ class updateRoleRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Role::rules();
+        return [
+            //
+        ];
     }
 }

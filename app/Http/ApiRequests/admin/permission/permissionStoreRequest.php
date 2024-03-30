@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\ApiRequests\admin;
+namespace App\Http\ApiRequests\admin\permission;
 
-use App\Models\panel\Permission;
+use App\Models\admin\Permission;
 use App\saeed\apiFormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class storePermissionRequest extends apiFormRequest
+class permissionStoreRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('create');
     }
 
     /**

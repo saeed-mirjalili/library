@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\ApiRequests\library;
+namespace App\Http\ApiRequests\admin\role;
 
-use App\Models\Category;
+use App\Models\admin\Role;
 use App\saeed\apiFormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class categoryUpdateRequest extends apiFormRequest
+class roleStoreRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('create');
     }
 
     /**
@@ -22,6 +23,9 @@ class categoryUpdateRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Category::rules();
+        return Role::rules([
+            'name' => 'required',
+            'display_name' => 'required'
+        ]);
     }
 }

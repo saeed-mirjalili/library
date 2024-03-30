@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\ApiRequests\library;
+namespace App\Http\ApiRequests\library\category;
 
-use App\Models\library\Book;
+use App\Models\Category;
 use App\saeed\apiFormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class bookStoreRequest extends apiFormRequest
+class categoryStoreRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,6 +23,6 @@ class bookStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Book::rules();
+        return Category::rules();
     }
 }

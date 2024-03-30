@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\ApiRequests\library;
+namespace App\Http\ApiRequests\admin\role;
 
-use App\Models\Author;
 use App\saeed\apiFormRequest;
 
-class authorStoreRequest extends apiFormRequest
+class roleIndexRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,6 +21,8 @@ class authorStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Author::rules();
+        return [
+
+        ];
     }
 }

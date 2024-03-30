@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\panel;
+namespace App\Models\admin;
 
 use App\Models\user\User;
 use App\Traits\HasRules;

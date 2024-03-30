@@ -1,12 +1,12 @@
 <?php
 
+use App\Http\Controllers\admin\permissionController;
+use App\Http\Controllers\admin\roleController;
 use App\Http\Controllers\library\authorController;
 use App\Http\Controllers\library\bookController;
 use App\Http\Controllers\library\categoryController;
-use App\Http\Controllers\user\panelController;
+use App\Http\Controllers\panel\panelController;
 use App\Http\Controllers\user\userController;
-use \App\Http\Controllers\admin\roleController;
-use \App\Http\Controllers\admin\permissionController;
 use Illuminate\Support\Facades\Route;
 
 /*

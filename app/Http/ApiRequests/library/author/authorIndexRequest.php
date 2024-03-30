@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\ApiRequests\admin;
+namespace App\Http\ApiRequests\library\author;
 
 use App\saeed\apiFormRequest;
 
-class deletePermissionRequest extends apiFormRequest
+class authorIndexRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class deletePermissionRequest extends apiFormRequest
     public function rules(): array
     {
         return [
-            //
+
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Services\admin;
 
-use App\Models\panel\Role;
+use App\Models\admin\Role;
 use App\Services\serviceResult;
 use App\Services\serviceWrapper;
 

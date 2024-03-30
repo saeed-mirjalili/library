@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\ApiRequests\library;
+namespace App\Http\ApiRequests\library\category;
 
-use App\Models\Author;
 use App\saeed\apiFormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class authorUpdateRequest extends apiFormRequest
+class categoryDeleteRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('delete');
     }
 
     /**
@@ -22,6 +22,8 @@ class authorUpdateRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Author::rules();
+        return [
+
+        ];
     }
 }

@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\panel;
 
 
 
 use App\Models\library\Book;
+use App\Services\serviceResult;
+use App\Services\serviceWrapper;
 
 class panelService
 {

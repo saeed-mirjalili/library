@@ -2,7 +2,7 @@
 
 namespace App\Services\admin;
 
-use App\Models\panel\Permission;
+use App\Models\admin\Permission;
 use App\Services\serviceResult;
 use App\Services\serviceWrapper;
 

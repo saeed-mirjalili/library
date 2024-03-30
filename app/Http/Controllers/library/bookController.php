@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\library;
 
-use App\Http\ApiRequests\library\bookStoreRequest;
-use App\Http\ApiRequests\library\bookUpdateRequest;
+use App\Http\ApiRequests\library\book\bookDeleteRequest;
+use App\Http\ApiRequests\library\book\bookIndexRequest;
+use App\Http\ApiRequests\library\book\bookShowRequest;
+use App\Http\ApiRequests\library\book\bookStoreRequest;
+use App\Http\ApiRequests\library\book\bookUpdateRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\library\bookResource;
 use App\Models\library\Book;
 use App\saeed\Facades\ApiResponse;
 use App\Services\library\bookService;
-use Illuminate\Support\Facades\Gate;
 
 class bookController extends Controller
 {
@@ -17,7 +19,7 @@ class bookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(bookIndexRequest $authorize)
     {
         $result = $this->bookService->indexBook();
 
@@ -48,7 +50,7 @@ class bookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show(Book $book, bookShowRequest $authorize)
     {
         $result = $this->bookService->showBook($book);
 
@@ -61,7 +63,7 @@ class bookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(bookUpdateRequest $request, Book $book)
+    public function update(Book $book, bookUpdateRequest $request)
     {
 
         $result = $this->bookService->updateBook($request->validated(), $book);
@@ -75,7 +77,7 @@ class bookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Book $book)
+    public function destroy(Book $book, bookDeleteRequest $authorize)
     {
         $result = $this->bookService->deleteBook($book);
         if (isset($result->data['status'])) {

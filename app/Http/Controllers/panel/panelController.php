@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\user;
+namespace App\Http\Controllers\panel;
 
 use App\Http\ApiRequests\panel\panelAddBooksRequest;
 use App\Http\ApiRequests\panel\panelRemoveBookRequest;
@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\user\userResource;
 use App\Models\library\Book;
 use App\saeed\Facades\ApiResponse;
-use App\Services\panelService;
+use App\Services\panel\panelService;
 
 class panelController extends Controller
 {
@@ -39,7 +39,7 @@ class panelController extends Controller
         return ApiResponse::withMessage('show books successful')->withData(new userResource($result->data->load('books')))->build()->apiResponse();
     }
 
-    public function removebooks(panelRemoveBookRequest $request) {
+    public function removeBooks(panelRemoveBookRequest $request) {
 
         $result = $this->panelService->removebooks($request);
         if (!$result->ok) {

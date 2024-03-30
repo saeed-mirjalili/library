@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\ApiRequests\admin;
+namespace App\Http\ApiRequests\library\author;
 
-use App\Models\panel\Role;
+use App\Models\Author;
 use App\saeed\apiFormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class storeRoleRequest extends apiFormRequest
+class authorStoreRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('create');
     }
 
     /**
@@ -22,9 +23,6 @@ class storeRoleRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Role::rules([
-            'name' => 'required',
-            'display_name' => 'required'
-        ]);
+        return Author::rules();
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\library;
 
-use App\Http\ApiRequests\library\categoryStoreRequest;
-use App\Http\ApiRequests\library\categoryUpdateRequest;
+use App\Http\ApiRequests\library\category\categoryDeleteRequest;
+use App\Http\ApiRequests\library\category\categoryIndexRequest;
+use App\Http\ApiRequests\library\category\categoryShowRequest;
+use App\Http\ApiRequests\library\category\categoryStoreRequest;
+use App\Http\ApiRequests\library\category\categoryUpdateRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\library\categoryResource;
 use App\Models\library\Category;
@@ -16,7 +19,7 @@ class categoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(categoryIndexRequest $authorize)
     {
         $result = $this->categoryService->indexCategory();
         return ApiResponse::withMessage('list')->withData(categoryResource::collection($result->data)->resource)->build()->apiResponse();
@@ -39,7 +42,7 @@ class categoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Category $category, categoryShowRequest $authorize)
     {
         $result = $this->categoryService->showCategory($category);
         return  ApiResponse::withMessage('show')->withData(new categoryResource($result->data->load('authors')->load('books')))->build()->apiResponse();
@@ -48,7 +51,7 @@ class categoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(categoryUpdateRequest $request, Category $category)
+    public function update(Category $category, categoryUpdateRequest $request)
     {
         $result = $this->categoryService->updateCategory($request->validated(), $category);
 
@@ -61,7 +64,7 @@ class categoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category, categoryDeleteRequest $authorize)
     {
         $result = $this->categoryService->deleteCategory($category);
         if(!$result->ok)

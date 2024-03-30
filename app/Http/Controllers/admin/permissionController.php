@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\ApiRequests\admin\storePermissionRequest;
+use App\Http\ApiRequests\admin\permission\permissionDeleteRequest;
+use App\Http\ApiRequests\admin\permission\permissionIndexRequest;
+use App\Http\ApiRequests\admin\permission\permissionStoreRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\admin\permissionResource;
-use App\Models\panel\Permission;
+use App\Models\admin\Permission;
 use App\saeed\Facades\ApiResponse;
 use App\Services\admin\permissionService;
-use Illuminate\Http\Request;
 
 class permissionController extends Controller
 {
@@ -16,7 +17,7 @@ class permissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(permissionIndexRequest $authorize)
     {
         $result = $this->permissionService->indexPermission();
         if (!$result->ok) {
@@ -28,7 +29,7 @@ class permissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(storePermissionRequest $request)
+    public function store(permissionStoreRequest $request)
     {
         $result = $this->permissionService->storePermission($request->validated());
         if (!$result->ok) {
@@ -40,7 +41,7 @@ class permissionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Permission $permission)
+    public function destroy(Permission $permission, permissionDeleteRequest $authorize)
     {
 
         $result = $this->permissionService->deletePermission($permission);

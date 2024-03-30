@@ -7,8 +7,8 @@ namespace Database\Seeders;
 use App\Models\library\Author;
 use App\Models\library\Book;
 use App\Models\library\Category;
-use App\Models\panel\Permission;
-use App\Models\panel\Role;
+use App\Models\admin\Permission;
+use App\Models\admin\Role;
 use App\Models\user\User;
 use Illuminate\Database\Seeder;
 

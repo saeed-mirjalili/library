@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\library;
 
-use App\Http\ApiRequests\library\authorStoreRequest;
-use App\Http\ApiRequests\library\authorUpdateRequest;
+use App\Http\ApiRequests\library\author\authorDeleteRequest;
+use App\Http\ApiRequests\library\author\authorIndexRequest;
+use App\Http\ApiRequests\library\author\authorShowRequest;
+use App\Http\ApiRequests\library\author\authorStoreRequest;
+use App\Http\ApiRequests\library\author\authorUpdateRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\library\authorResource;
 use App\Models\library\Author;
@@ -16,7 +19,7 @@ class authorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(authorIndexRequest $authorize)
     {
         $result = $this->authorService->indexAuthor();
         if (!$result->ok) {
@@ -43,7 +46,7 @@ class authorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Author $author)
+    public function show(Author $author, authorShowRequest $authorize)
     {
         $result = $this->authorService->showAuthor($author);
 
@@ -56,7 +59,7 @@ class authorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(authorUpdateRequest $request, Author $author)
+    public function update(Author $author, authorUpdateRequest $request)
     {
 
         $result = $this->authorService->updateAuthor($request, $author);
@@ -70,7 +73,7 @@ class authorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Author $author)
+    public function destroy(Author $author, authorDeleteRequest $authorize)
     {
         $result = $this->authorService->deleteAuthor($author);
 

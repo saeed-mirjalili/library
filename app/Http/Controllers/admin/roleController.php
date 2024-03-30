@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\ApiRequests\admin\storeRoleRequest;
-use App\Http\ApiRequests\admin\updateRoleRequest;
+use App\Http\ApiRequests\admin\role\roleDeleteRequest;
+use App\Http\ApiRequests\admin\role\roleIndexRequest;
+use App\Http\ApiRequests\admin\role\roleShowRequest;
+use App\Http\ApiRequests\admin\role\roleStoreRequest;
+use App\Http\ApiRequests\admin\role\roleUpdateRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\admin\roleResource;
-use App\Models\panel\Role;
+use App\Models\admin\Role;
 use App\saeed\Facades\ApiResponse;
 use App\Services\admin\roleService;
-use Illuminate\Http\Request;
 
 class roleController extends Controller
 {
@@ -17,7 +19,7 @@ class roleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(roleIndexRequest $authorize)
     {
         $result = $this->roleService->indexRole();
         if (!$result->ok) {
@@ -29,7 +31,7 @@ class roleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(storeRoleRequest $request)
+    public function store(roleStoreRequest $request)
     {
         $result = $this->roleService->storeRole($request->validated());
         if (!$result->ok) {
@@ -41,7 +43,7 @@ class roleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show(Role $role, roleShowRequest $authorize)
     {
         $result = $this->roleService->showRole($role);
         if (!$result->ok) {
@@ -53,7 +55,7 @@ class roleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(updateRoleRequest $request, Role $role)
+    public function update(Role $role, roleUpdateRequest $request)
     {
 
         $result = $this->roleService->updateRole($request, $role);
@@ -66,7 +68,7 @@ class roleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
+    public function destroy(Role $role, roleDeleteRequest $authorize)
     {
 
         $result = $this->roleService->deleteRole($role);

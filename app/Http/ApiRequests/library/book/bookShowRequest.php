@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\ApiRequests\library;
+namespace App\Http\ApiRequests\library\book;
 
-use App\Models\Category;
 use App\saeed\apiFormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class categoryStoreRequest extends apiFormRequest
+class bookShowRequest extends apiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('exhibit');
     }
 
     /**
@@ -22,6 +22,8 @@ class categoryStoreRequest extends apiFormRequest
      */
     public function rules(): array
     {
-        return Category::rules();
+        return [
+
+        ];
     }
 }

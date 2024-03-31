@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\admin;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Permision>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\admin\Role>
  */
-class PermissionFactory extends Factory
+class roleFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +17,7 @@ class PermissionFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'display_name' => fake()->jobTitle()
+            //
         ];
     }
 }

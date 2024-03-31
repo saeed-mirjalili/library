@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\library;
 
 use App\Models\library\Author;
 use App\Models\library\Category;

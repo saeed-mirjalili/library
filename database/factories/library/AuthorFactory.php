@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\library;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\library\Category>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\library\Author>
  */
-class CategoryFactory extends Factory
+class AuthorFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,6 @@ class CategoryFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'description' => fake()->sentence(5)
         ];
     }
 }

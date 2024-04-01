@@ -15,7 +15,59 @@ class permissionController extends Controller
 {
     public function __construct(private permissionService $permissionService){}
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/permissions",
+     *     tags={"admin"},
+     *     security={{"sanctum":{}}},
+     *     description="",
+     *     summary="admin can make permission and role for user",
+     *     @OA\Response(
+     *     response=200,
+     *     description="Display a listing of the permission.",
+     *     @OA\JsonContent(
+     *         @OA\Property (
+     *             property="data",
+     *             type="object",
+     *               @OA\Property (
+     *                  property="data",
+     *                  type="array",
+     *                   @OA\Items(
+     *                    @OA\Property (
+     *                     property="name",
+     *                     type="string",
+     *                     nullable=false,
+     *                     example="admin",
+     *                    ),
+     *                    @OA\Property (
+     *                      property="display_name",
+     *                      type="string",
+     *                      nullable=false,
+     *                      example="Admin",
+     *                     ),
+     *                          @OA\Property (
+     *                     property="roles",
+     *                     type="array",
+     *                      @OA\Items(
+     *                       @OA\Property (
+     *                        property="name",
+     *                        type="string",
+     *                        nullable=false,
+     *                        example="name",
+     *                       ),
+     *                       @OA\Property (
+     *                         property="display_name",
+     *                         type="string",
+     *                         nullable=false,
+     *                         example="Name",
+     *                        ),
+     *                    ),
+     *                 ),
+     *                 ),
+     *              ),
+     *         )
+     *     )
+     * )
+     * )
      */
     public function index(permissionIndexRequest $authorize)
     {
@@ -23,7 +75,7 @@ class permissionController extends Controller
         if (!$result->ok) {
             return ApiResponse::withMessage('error')->withData($result->data)->withStatus(500)->build()->apiResponse();
         }
-        return ApiResponse::withData(permissionResource::collection($result->data)->resource)->build()->apiResponse();
+        return ApiResponse::withData(permissionResource::collection($result->data->load('roles'))->resource)->build()->apiResponse();
     }
 
     /**

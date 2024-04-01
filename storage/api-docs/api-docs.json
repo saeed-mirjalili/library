@@ -1,0 +1,181 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "backend for library project",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/permissions": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "admin can make permission and role for user",
+                "description": "",
+                "operationId": "4ba3a726aa64368fa76f701783b950e1",
+                "responses": {
+                    "200": {
+                        "description": "Display a listing of the permission.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "admin",
+                                                                "nullable": false
+                                                            },
+                                                            "display_name": {
+                                                                "type": "string",
+                                                                "example": "Admin",
+                                                                "nullable": false
+                                                            },
+                                                            "roles": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "type": "string",
+                                                                            "example": "name",
+                                                                            "nullable": false
+                                                                        },
+                                                                        "display_name": {
+                                                                            "type": "string",
+                                                                            "example": "Name",
+                                                                            "nullable": false
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiPaginate": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "first_page_url": {
+                        "type": "string",
+                        "example": "url"
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "last_page": {
+                        "type": "integert",
+                        "example": 3
+                    },
+                    "last_page_url": {
+                        "type": "string",
+                        "example": "url"
+                    },
+                    "links": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "url": {
+                                    "type": "string",
+                                    "example": "url",
+                                    "nullable": false
+                                },
+                                "label": {
+                                    "type": "string",
+                                    "example": "&laquo; Previous",
+                                    "nullable": false
+                                },
+                                "active": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "nullable": false
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "next_page_url": {
+                        "type": "string",
+                        "example": "url"
+                    },
+                    "path": {
+                        "type": "string",
+                        "example": "url"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "prev_page_url": {
+                        "type": "string",
+                        "example": "url"
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 2
+                    }
+                },
+                "type": "object"
+            },
+            "401Error": {
+                "properties": {
+                    "current_page": {
+                        "type": "message",
+                        "example": "you have to login"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "admin"
+        }
+    ]
+}
